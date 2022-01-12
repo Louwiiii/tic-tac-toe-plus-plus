@@ -14,7 +14,7 @@ class Server:
 
         # TCP based server
         self.server_socket = socket.socket()
-        self.address = (socket.gethostname(), port)
+        self.address = ("localhost", port)
 
         # Bind the socket to the public host and the given port
         try:
@@ -54,16 +54,17 @@ class Server:
     def threaded_client (self, client, game_id, player_number):
         client_socket, client_address = client
 
-        client_socket.send("{player_number}:"+str(player_number).encode())
+        client_socket.send(("{player_number}:"+str(player_number)).encode())
 
         # Handle one request from client
         try:
             while True:
                 data = client_socket.recv(1024)
 
-                print("Received data:\n", data)
+
 
                 if (data != b''):
+                    print("Received data:\n", data)
                     tag, content = data.decode().split(":",1)
                     if tag == "{play}":
                         self.games[game_id].play(player_number, content)

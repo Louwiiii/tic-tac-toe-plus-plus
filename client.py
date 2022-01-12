@@ -1,7 +1,10 @@
 import socket
+
+import main
 from game import Game
 import pickle
-
+import threading
+import _thread
 
 class Client:
     def __init__(self, address):
@@ -17,24 +20,27 @@ class Client:
 
         print("Player connected to a game")
 
-        self.player_number = s.recv(1024).decode()
+        #threading.Thread(target=main.pygame_loop).start()
+        _thread.start_new_thread(Client.game_loop, (self, s))
+        main.pygame_loop()
+    def game_loop(self,s):
+        self.player_number = int(str(s.recv(1024).decode()).split(":",1)[1])
         self.game = Game(0)
 
-        print(f"Player has number {self.player.number}")
+        print(f"Player has number {self.player_number}")
+
 
         while True:
-            message = input()
-
-            # Send a message
-            s.send(message.encode())
 
             # Get the reply
             msgReceived = s.recv(1024)
-
             self.game = pickle.loads(msgReceived)
 
-            # Print the reply
-            print("Received :\n"+msgReceived.decode())
+            main.draw_game()
+            if self.game.turn==self.player_number:
+                action = "{play}:"+main.get_action(self.game)
+                s.send(action.encode())
+
 
 
 if __name__ == "__main__":
@@ -53,3 +59,4 @@ if __name__ == "__main__":
 
     print(f"Trying to connect to {ip}:{port}")
     client = Client((ip, port))
+
