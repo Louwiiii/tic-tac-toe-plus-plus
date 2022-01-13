@@ -18,7 +18,7 @@ BEIGE = (255, 237, 218)
 YELLOW = (255, 184, 48)
 RED = (255, 36, 66)
 BLACK = (0, 0, 0)
-
+GREEN_OF_WIN = (20,99,86)
 done = False
 mouse_is_down = False
 clicked_pos = None
@@ -26,12 +26,19 @@ clicked_pos = None
 grid_size = int(min(SCREEN_WIDTH, SCREEN_HEIGHT)*0.8)
 horizontal_margin = (SCREEN_WIDTH-grid_size)//2
 vertical_margin = (SCREEN_HEIGHT-grid_size)//2
+
+font = pygame.font.Font('freesansbold.ttf', vertical_margin//2)
+text = font.render('Waiting for player', True, BLACK)
+textRect = text.get_rect()
+textRect.center = (SCREEN_WIDTH//2, vertical_margin//2)
+
 def pygame_loop ():
     global done
     global mouse_is_down
     global clicked_pos
 
     draw_background()
+    screen.blit(text, textRect)
 
     while not done:
         for event in pygame.event.get():
@@ -78,13 +85,6 @@ def get_action ():
 def draw_background():
     screen.fill(BEIGE)
 
-    # screen.blit(text, textRect)
-    # for i in range(10):
-    #    screen.blit(texts[i], textRects[i])
-    # for row in cells:
-    #    for cell in row:
-    #        pygame.draw.rect(screen, cell.color, (cell.x - cell.size[0]/2, cell.y - cell.size[1]/2, cell.size[0], cell.size[1]))
-    # pygame.draw.rect(screen, BLUE, (0,0, 500,500))
     pygame.draw.line(screen, BLACK, (horizontal_margin, vertical_margin),
                      (SCREEN_WIDTH - horizontal_margin, vertical_margin))
     for i, j in zip(range(vertical_margin, grid_size + 1 + vertical_margin, grid_size // 3),
@@ -95,9 +95,21 @@ def draw_background():
         for j in range(horizontal_margin, grid_size + horizontal_margin - 10, grid_size // 3):
             drawtictactoe(j, i)
 
-def draw_game (game):
+def draw_game (game, player_number):
+    global text
     draw_background()
-
+    if game.turn == player_number:
+        text = font.render("It's your turn", True, BLACK)
+    else:
+        text = font.render("It's the opponent's turn", True, BLACK)
+    if game.winner is not None:
+        if game.winner == -1:
+            text = font.render("IT'S A TIE !", True, BLACK)
+        elif game.winner == player_number:
+            text = font.render("YOU WON THE GAME ! :)", True, GREEN_OF_WIN)
+        else:
+            text = font.render("YOU LOST THE GAME :(", True, RED)
+    screen.blit(text, textRect)
     for i in range(len(game.grid)):
         for j in range(len(game.grid[0])):
             element = game.grid[i][j]

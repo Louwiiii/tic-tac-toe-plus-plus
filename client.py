@@ -36,7 +36,7 @@ class Client:
             msg_received = s.recv(1024)
             self.game = pickle.loads(msg_received)
             print("Received the state of the game")
-            main.draw_game(self.game)
+            main.draw_game(self.game, self.player_number)
             if self.game.turn == self.player_number:
                 action = "{play}:"+main.get_action()
                 s.send(action.encode())

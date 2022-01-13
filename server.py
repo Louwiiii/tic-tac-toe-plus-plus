@@ -91,7 +91,8 @@ class Server:
                     print("Sent game to player")
                     opponent_socket.send(pickle.dumps(self.games[game_id]))
                     print("Sent game to opponent")
-        except:
+        except Exception as e:
+            print(e)
             print(f"Connection with client {client_address} was lost")
 
         try:
