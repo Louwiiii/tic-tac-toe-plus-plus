@@ -15,7 +15,8 @@ class Client:
         print("Port:",port)
 
         # TCP based client socket
-        s = socket.socket()
+        #s = socket.socket()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         s.connect(address)
 
