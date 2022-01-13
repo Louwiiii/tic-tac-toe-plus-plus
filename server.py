@@ -15,6 +15,7 @@ class Server:
         # TCP based server
         self.server_socket = socket.socket()
         self.address = ("localhost", port)
+        print(self.address)
 
         # Bind the socket to the public host and the given port
         try:
@@ -30,6 +31,8 @@ class Server:
             client = self.server_socket.accept()
             client_id = clients_id_count
 
+            print(f"Client number {client_id} connected")
+
             self.clients[client_id] = client
 
             clients_id_count += 1
@@ -40,14 +43,15 @@ class Server:
                 # Start a new game
                 player_number = 0
                 self.games[game_id] = Game(game_id)
+                print(f"Created game number {game_id}")
             else:
                 # Add client to the last game
                 player_number = 1
+                print(f"Game number {game_id} started")
                 games_id_count += 1
 
             self.games[game_id].players_ids.append(client_id)
 
-            #_thread.start_new_thread(client, game_id)
             threading.Thread(target=self.threaded_client, args=(client, game_id, player_number)).start()
 
 
@@ -56,22 +60,31 @@ class Server:
 
         client_socket.send(("{player_number}:"+str(player_number)).encode())
 
+        if player_number == 1:
+            first_player_socket, first_player_address = self.clients[self.games[game_id].players_ids[0]]
+            # Send the board to the first player so that he can start to play
+            print("Board has been sent to player 0 and game has started")
+            first_player_socket.send(pickle.dumps(self.games[game_id]))
+
         # Handle one request from client
         try:
             while True:
                 data = client_socket.recv(1024)
 
-
-
                 if (data != b''):
                     print("Received data:\n", data)
                     tag, content = data.decode().split(":",1)
                     if tag == "{play}":
-                        self.games[game_id].play(player_number, content)
+                        print(f"Player number {player_number} played")
+                        action_is_valid = self.games[game_id].play(player_number, content)
+                        print(f"Action valid:",action_is_valid)
 
-                    opponent_id = self.games[game_id].players_ids[(player_number + 1) % 1]
+                    opponent_id = self.games[game_id].players_ids[(player_number + 1) % 2]
                     opponent_socket, opponent_address = self.clients[opponent_id]
+                    client_socket.send(pickle.dumps(self.games[game_id]))
+                    print("Sent game to player")
                     opponent_socket.send(pickle.dumps(self.games[game_id]))
+                    print("Sent game to opponent")
         except:
             print(f"Connection with client {client_address} was lost")
 
@@ -90,7 +103,7 @@ if __name__ == "__main__":
         port = int(input())
         print("Server started on port", port)
     except:
-        port = 5500
+        port = 55000
         print("Port was incorrect, server started on port", port)
 
     server = Server(port)

@@ -6,6 +6,7 @@ import pickle
 import threading
 import _thread
 
+
 class Client:
     def __init__(self, address):
         ip,port = address
@@ -20,28 +21,26 @@ class Client:
 
         print("Player connected to a game")
 
-        #threading.Thread(target=main.pygame_loop).start()
-        _thread.start_new_thread(Client.game_loop, (self, s))
+        threading.Thread(target=Client.game_loop, args=(self,s)).start()
         main.pygame_loop()
+
     def game_loop(self,s):
         self.player_number = int(str(s.recv(1024).decode()).split(":",1)[1])
         self.game = Game(0)
 
         print(f"Player has number {self.player_number}")
 
-
         while True:
-
             # Get the reply
-            msgReceived = s.recv(1024)
-            self.game = pickle.loads(msgReceived)
-
-            main.draw_game()
-            if self.game.turn==self.player_number:
-                action = "{play}:"+main.get_action(self.game)
+            msg_received = s.recv(1024)
+            self.game = pickle.loads(msg_received)
+            print("Received the state of the game")
+            main.draw_game(self.game)
+            if self.game.turn == self.player_number:
+                action = "{play}:"+main.get_action()
                 s.send(action.encode())
-
-
+                print("Sent action:")
+                print(action)
 
 if __name__ == "__main__":
     try:
@@ -51,11 +50,11 @@ if __name__ == "__main__":
             port = int(port)
 
         else:
-            ip, port = text, 5500
+            ip, port = text, 55000
             if ip == "":
                 ip = "localhost"
-    except:
-        ip, port = "localhost", 5500
+    finally:
+        ip, port = "localhost", 55000
 
     print(f"Trying to connect to {ip}:{port}")
     client = Client((ip, port))
