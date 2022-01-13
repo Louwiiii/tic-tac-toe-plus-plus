@@ -13,8 +13,8 @@ class Server:
         clients_id_count = 0
 
         # TCP based server
-        self.server_socket = socket.socket()
-        self.address = ("localhost", port)
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.address = ("", port)
         print(self.address)
 
         # Bind the socket to the public host and the given port
@@ -37,18 +37,24 @@ class Server:
 
             clients_id_count += 1
 
-            game_id = games_id_count
+            available_game = None
+            for game in self.games.values():
+                if len(game.players_ids) == 1:
+                    available_game = game.id
+                    break
 
-            if len(self.clients)%2 == 1:
+            if available_game is None:
                 # Start a new game
+                game_id = games_id_count
                 player_number = 0
                 self.games[game_id] = Game(game_id)
                 print(f"Created game number {game_id}")
+                games_id_count += 1
             else:
                 # Add client to the last game
+                game_id = available_game
                 player_number = 1
                 print(f"Game number {game_id} started")
-                games_id_count += 1
 
             self.games[game_id].players_ids.append(client_id)
 

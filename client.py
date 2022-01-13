@@ -43,18 +43,18 @@ class Client:
                 print(action)
 
 if __name__ == "__main__":
-    try:
-        text = input("Please enter the server IP address: ")
-        if ":" in text:
-            ip, port = text.split(":")
-            port = int(port)
+    print("Please enter the server IP address: ")
+    text = input()
+    if ":" in text:
+        ip, port = text.split(":")
+        port = int(port)
 
-        else:
-            ip, port = text, 55000
-            if ip == "":
-                ip = "localhost"
-    finally:
-        ip, port = "localhost", 55000
+    else:
+        ip, port = text, 55000
+        if ip == "":
+            ip = "localhost"
+    #finally:
+    #    ip, port = "localhost", 55000
 
     print(f"Trying to connect to {ip}:{port}")
     client = Client((ip, port))
