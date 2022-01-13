@@ -37,12 +37,10 @@ def pygame_loop ():
                     done = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_is_down = True
+                print("test 784")
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_is_down = False
 
-        if mouse_is_down:
-            x, y = pygame.mouse.get_pos()
-            #play_at(x,y)
 
 
 
@@ -81,7 +79,24 @@ def drawtictactoe (x, y):
     pygame.draw.line(screen, BLACK, (x + small_grid_size*2//3, y + small_grid_size//7), (x + small_grid_size*2//3, y + small_grid_size*6//7))
 
 def get_action (game):
-    pass
+    global done
+    global mouse_is_down
+    x=0
+    y=0
+    mouse_was_down = mouse_is_down
+    print("yes")
+    while True:
+        print("yes yes")
+        if not mouse_was_down and mouse_is_down:
+            x, y = pygame.mouse.get_pos()
+            print("mouse clicked")
+            #if(x<horizontal_margin or )
+        mouse_was_down = mouse_is_down
+
+
 
 def draw_game (game):
     pass
+
+if __name__=="__main__":
+    pygame_loop()
