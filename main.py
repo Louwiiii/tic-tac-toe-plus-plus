@@ -98,6 +98,7 @@ def draw_background():
 def draw_game (game, player_number):
     global text
     draw_background()
+
     if game.turn == player_number:
         text = font.render("It's your turn", True, BLACK)
     else:
@@ -125,6 +126,27 @@ def draw_game (game, player_number):
                 pygame.draw.line(screen, RED, (x-grid_size//30, y-grid_size//30), (x+grid_size//30, y+grid_size//30), 10)
                 pygame.draw.line(screen, RED, (x - grid_size // 30, y + grid_size // 30), (x + grid_size // 30, y - grid_size // 30), 10)
 
+    for i in range(3):
+        for j in range(3):
+            winner = game.get_winner(game.get_subgrid((j, i)))
+            if winner is not None:
+                    pygame.draw.rect(screen, BEIGE, pygame.Rect(2+horizontal_margin+j*grid_size//3,2+vertical_margin+i*grid_size//3, -4+grid_size//3,-4+grid_size//3))
+                    pygame.display.flip()
+                    if winner == 0:
+                        pygame.draw.circle(screen, BLUE, (grid_size//6+horizontal_margin+j*grid_size//3, grid_size//6+vertical_margin+i*grid_size//3), -4+grid_size//8)
+                        pygame.draw.circle(screen, BEIGE, (grid_size//6+horizontal_margin+j*grid_size//3, grid_size//6+vertical_margin+i*grid_size//3), -4+grid_size /10)
+                    if winner == 1:
+                        x = int(horizontal_margin + grid_size // 6 + (j * grid_size) // 3)
+                        y = int(vertical_margin + grid_size // 6 + (i * grid_size) // 3)
+                        pygame.draw.line(screen, RED, (x-grid_size//10, y-grid_size//10), (x+grid_size//10, y+grid_size//10), 30)
+                        pygame.draw.line(screen, RED, (x - grid_size // 10, y + grid_size // 10), (x + grid_size // 10, y - grid_size // 10), 30)
+                    if winner == -1: #ToDo
+                        x = int(horizontal_margin + grid_size // 6 + (j * grid_size) // 3)
+                        y = int(vertical_margin + grid_size // 6 + (i * grid_size) // 3)
+                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y - grid_size // 10),
+                                         (x + grid_size // 10, y - grid_size // 10), 30)
+                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y + grid_size // 10),
+                                         (x + grid_size // 10, y + grid_size // 10), 30)
 
 if __name__=="__main__":
     pygame_loop()
