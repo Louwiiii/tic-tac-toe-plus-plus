@@ -1,4 +1,4 @@
-# tic_tac_toe_plus_plus
+# tic-tac-toe-plus-plus
 
 Tic-tac-toe++ is an improved version of the Tic-Tac-Toe game.
 
