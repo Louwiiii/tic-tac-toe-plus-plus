@@ -171,13 +171,10 @@ def draw_game (game, player_number):
                         y = int(vertical_margin + grid_size // 6 + (i * grid_size) // 3)
                         pygame.draw.line(screen, RED, (x-grid_size//10, y-grid_size//10), (x+grid_size//10, y+grid_size//10), 30)
                         pygame.draw.line(screen, RED, (x - grid_size // 10, y + grid_size // 10), (x + grid_size // 10, y - grid_size // 10), 30)
-                    if winner == -1: #ToDo
+                    if winner == -1:
                         x = int(horizontal_margin + grid_size // 6 + (j * grid_size) // 3)
                         y = int(vertical_margin + grid_size // 6 + (i * grid_size) // 3)
-                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y - grid_size // 10),
-                                         (x + grid_size // 10, y - grid_size // 10), 30)
-                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y + grid_size // 10),
-                                         (x + grid_size // 10, y + grid_size // 10), 30)
-
-if __name__=="__main__":
-    pygame_loop()
+                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y - grid_size // 20),
+                                         (x + grid_size // 10, y - grid_size // 20), 30)
+                        pygame.draw.line(screen, GREEN_OF_WIN, (x - grid_size // 10, y + grid_size // 20),
+                                         (x + grid_size // 10, y + grid_size // 20), 30)

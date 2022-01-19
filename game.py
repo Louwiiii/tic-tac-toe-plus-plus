@@ -34,7 +34,7 @@ class Game:
         if self.subgrid_finished(subgrid_played):
             for i in range(subgrid_played[1]*3,(subgrid_played[1]*3)+3):
                 for j in range(subgrid_played[0]*3,(subgrid_played[0]*3)+3):
-                    self.grid[i][j] = str(player_number)
+                    self.grid[i][j] = str(self.get_winner(self.get_subgrid(subgrid_played)))
 
         global_grid = [[" " for j in range(3)] for i in range(3)]
 
