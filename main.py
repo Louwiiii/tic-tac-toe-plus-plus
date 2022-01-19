@@ -28,7 +28,7 @@ horizontal_margin = (SCREEN_WIDTH-grid_size)//2
 vertical_margin = (SCREEN_HEIGHT-grid_size)//2
 
 font = pygame.font.Font('freesansbold.ttf', vertical_margin//2)
-text = font.render('Waiting for player', True, BLACK)
+text = font.render('Waiting for player to connect', True, BLACK)
 textRect = text.get_rect()
 textRect.center = (SCREEN_WIDTH//2, vertical_margin//2)
 
@@ -99,6 +99,35 @@ def draw_game (game, player_number):
     global text
     draw_background()
 
+    # Show the grid where the player needs to play
+    if game.turn == player_number and len(game.moves[(player_number + 1) % 2]) > 0:
+        last_opponent_move = game.moves[(player_number + 1) % 2][-1]
+        subgrid_to_play = (last_opponent_move[0] % 3, last_opponent_move[1] % 3)
+
+        if not game.subgrid_finished(subgrid_to_play):
+            # Top line
+            pygame.draw.line(screen, YELLOW, (horizontal_margin+subgrid_to_play[0]*grid_size//3, vertical_margin + subgrid_to_play[1]*grid_size//3),
+                             (horizontal_margin+(subgrid_to_play[0]+1)*grid_size//3, vertical_margin + subgrid_to_play[1]*grid_size//3),
+                             5)
+            # Bottom line
+            pygame.draw.line(screen, YELLOW,
+                             (horizontal_margin + subgrid_to_play[0] * grid_size // 3, vertical_margin + (subgrid_to_play[1]+1) * grid_size // 3),
+                             (horizontal_margin + (subgrid_to_play[0] + 1) * grid_size // 3, vertical_margin + (subgrid_to_play[1]+1) * grid_size // 3),
+                             5)
+            # Left line
+            pygame.draw.line(screen, YELLOW, (horizontal_margin + subgrid_to_play[0] * grid_size // 3,
+                                              vertical_margin + subgrid_to_play[1] * grid_size // 3),
+                             (horizontal_margin + subgrid_to_play[0] * grid_size // 3, vertical_margin + (subgrid_to_play[1]+1) * grid_size // 3),
+                             5)
+            # Right line
+            pygame.draw.line(screen, YELLOW,
+                             (horizontal_margin+(subgrid_to_play[0]+1)*grid_size//3, vertical_margin + subgrid_to_play[1]*grid_size//3),
+                             (horizontal_margin + (subgrid_to_play[0] + 1) * grid_size // 3,
+                              vertical_margin + (subgrid_to_play[1] + 1) * grid_size // 3),
+                             5)
+
+
+
     if game.turn == player_number:
         text = font.render("It's your turn", True, BLACK)
     else:
@@ -110,6 +139,8 @@ def draw_game (game, player_number):
             text = font.render("YOU WON THE GAME ! :)", True, GREEN_OF_WIN)
         else:
             text = font.render("YOU LOST THE GAME :(", True, RED)
+    textRect = text.get_rect()
+    textRect.center = (SCREEN_WIDTH // 2, vertical_margin // 2)
     screen.blit(text, textRect)
     for i in range(len(game.grid)):
         for j in range(len(game.grid[0])):
